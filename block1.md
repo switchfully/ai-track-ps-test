@@ -57,6 +57,7 @@ yourselves. You'll meet them in this order:
 | `charter.md` | Pair CD | Block 1 | The charter for your exploratory session |
 | `session-notes.md` | Pair CD | Block 1 | What you tried, what you expected, what happened |
 | `bugs.md` | Both pairs | Block 1 | One shared list of every genuine defect |
+| `instructions.md` | Both pairs | Block 1 | Your house rules. The AI reads them before every request |
 | `prompt-log.md` | Every pair | Block 2 | Your prompts, with a one-line verdict each |
 | `decisions.md` | Every pair | Block 2 | What you decided and what you learned |
 | `pre-release-quality-report.md` | Manual track | Block 3 | The report with a release recommendation |
@@ -361,6 +362,32 @@ Business rules to check against:
 
 ---
 
+## The last 15 minutes, with your whole team: write your house rules
+
+* **Read:** the prompts of this morning that worked best, and your `bugs.md`
+* **Create:** `instructions.md` in the root of the working folder (new file), and a copy in the place where your AI tool reads it
+* **Done when:** the file is saved in the shared folder, it has the two required rules, and you saw it change an answer
+
+By now you've probably typed "paste the real response", "label what you assumed" or "check the status code and the body" more than once. That's annoying, and it's easy to forget one of them. So let's write them down once, in a place where the AI reads them before every request.
+
+* Together with the other pair, write a short instructions file for this engagement: `instructions.md` (10 to 20 lines). Use the lines from your prompts that made the biggest difference. You can let the AI draft it, but do edit it yourselves afterwards:
+
+```
+Based on the prompts we used this morning [paste 2 or 3 of your best prompts], write a
+short set of standing instructions for an AI assistant helping us test RetroFlow. Cover:
+our role, what the source of truth is, how it must treat a predicted response versus a real
+one, the format of a test case and of a bug report, what makes an assertion good, and what
+it must never do. Keep it under 20 lines.
+```
+
+* Make sure it contains at least these two rules, in your own words: the AI never presents a predicted response as a fact (it writes what it expects, and waits for the real status code and body), and every claim points at a source, either a sentence from the brief or a response you pasted. Anything else it assumed gets labelled as an assumption.
+* Put a copy where your tool reads it. In GitHub Copilot that is `.github/copilot-instructions.md`, in Claude Code it is `CLAUDE.md`, in Claude.ai it is the instructions of a Project, and in Microsoft 365 Copilot it is Settings, Personalization, Custom instructions. In Block 2 the agent reads this file automatically, if you put it in the right place.
+* Try it out. Start a new chat, and run one of your earlier prompts again, but this time without the extra rules. Does the answer still follow them?
+
+> Want to know what each tool supports exactly? Take a look at `ai-cheat-sheets/working-efficiently.md`.
+
+---
+
 ## End of Block 1 checklist
 
 This is also what we look at in Retro 1. Your coach asks one pair to show their result on the
@@ -382,5 +409,6 @@ shared screen. Before Retro 1, your team should be able to answer yes to:
 
 **Both pairs together:**
 - [ ] `bugs.md` exists as one shared list, merged from both pairs' findings
+- [ ] `instructions.md` exists, has the two required rules, and you tried it in a new chat
 - [ ] Everyone knows the actual current behaviour of the app on at least a handful of
       endpoints, not just what the brief says it should do

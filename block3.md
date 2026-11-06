@@ -234,7 +234,7 @@ Done? Go to the skill at the bottom of this file: "Both tracks, the last 25 minu
 
 You've written a lot of instructions for the same kind of check by now. A skill saves you that work. It's a folder with a `SKILL.md` file in it, which tells the AI how to do one specific task. The AI only reads the short description of each skill it has, and loads the full instructions when your request matches that description.
 
-> How is this different from an instructions file, a file the AI reads before every request? A skill is only read when it's relevant. `ai-cheat-sheets/working-efficiently.md` explains it in a bit more detail.
+> How is this different from the instructions file you made this morning? That file is read before every request. A skill is only read when it's relevant. `ai-cheat-sheets/working-efficiently.md` explains it in a bit more detail.
 
 Which skill do you build? That depends on your track:
 

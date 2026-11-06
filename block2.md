@@ -48,6 +48,8 @@ An agent is an AI that reads and edits several files by itself and can run comma
 
 > Your own editor works too, and then you choose the tool: Playwright, Cypress or Postman/Newman. Tell the agent which one in your first prompt. No idea? Playwright works for everyone, and the starter has it ready.
 
+> Did you put the instructions file from Block 1 in the place where your tool reads it (`.github/copilot-instructions.md`, or `CLAUDE.md` for Claude Code)? Then the agent follows your house rules without you pasting them. Check it in the first plan: does the agent mention them?
+
 > There's one rule for this block: you don't edit any test by hand. The only exceptions are `prompt-log.md`, `bugs.md`, `decisions.md` and the `.env` file with your group's URL. The `.env` file is setup, not a test, so you make that one yourself. If the agent produces a weak test, you fix it by giving it another instruction. It will feel slower at times, but this is exactly how you find out where agents go wrong.
 
 > Two pairs of your group share one app. Put your own initials in the names of the teams you create, so you don't trip over each other's data.
