@@ -23,7 +23,7 @@ Per block you choose your pair or your track, you see your steps, and you mark t
   * [`RetroflowApiTest.java`](RetroflowApiTest.java): the test suite you inherited, to read, not to run
   * [`stackcraft-qa-standards.md`](stackcraft-qa-standards.md): StackCraft's QA standards, for Block 3
   * [`ai-cheat-sheets/`](ai-cheat-sheets/): how the AI tools work
-* **An AI tool and Postman** (or a browser, or curl).
+* **An AI tool and Postman** (or a browser, or curl). Never used Postman? Do [`postman-in-20-minutes.md`](ai-cheat-sheets/postman-in-20-minutes.md) with your partner first.
 * **Writing tests in Block 2 without an editor on your laptop?** Use the [RetroFlow tests starter](https://github.com/switchfully/ai-track-ps-test-retroflow-starter): open it as a GitHub Codespace, and Node.js and Playwright are ready. This needs a free GitHub account.
 
 ## Sharing your work

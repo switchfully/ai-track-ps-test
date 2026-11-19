@@ -95,7 +95,7 @@ Then you'll find:
 
 Not sure what to do now? Look at Read, Create and Done when first. Still not sure? Ask your coach. It means the exercise isn't clear enough, not that you're doing it wrong.
 
-**Which tool?** The exercises are written for an AI chat tool and Postman (or a browser). Use GitHub Copilot Chat or Claude.ai, whichever works on your laptop right now. Want to use something else? Go ahead, as long as AI does the work. The cheat sheets in `ai-cheat-sheets/` show you how the main tools work. New to Postman? Ask your partner or your coach for a two-minute tour. That's what pairs are for.
+**Which tool?** The exercises are written for an AI chat tool and Postman (or a browser). Use GitHub Copilot Chat or Claude.ai, whichever works on your laptop right now. Want to use something else? Go ahead, as long as AI does the work. The cheat sheets in `ai-cheat-sheets/` show you how the main tools work. **New to Postman?** Work through [`ai-cheat-sheets/postman-in-20-minutes.md`](https://github.com/switchfully/ai-track-ps-test/blob/main/ai-cheat-sheets/postman-in-20-minutes.md) together with your partner, before you start or during setting up. It takes you from nothing to your first saved requests, and it's all you need today.
 
 **One chat per prompt.** Start a new chat for each prompt. Long chats drift: an instruction from twenty messages ago has lost most of its weight.
 
@@ -140,6 +140,7 @@ Running behind? Don't skip Prompt 5, it's the most important prompt of the block
 * **Create:** the shared `retroflow-qa` folder, if nobody in your group made it yet, and a Postman collection
 * **Done when:** your pair sent one request to your group's URL and saw a real response, and you both read the brief yourselves
 
+* Never used Postman? Do [`ai-cheat-sheets/postman-in-20-minutes.md`](https://github.com/switchfully/ai-track-ps-test/blob/main/ai-cheat-sheets/postman-in-20-minutes.md) first. It covers everything in this setup, step by step.
 * In Postman, create a collection "RetroFlow" with a variable `baseUrl` set to your group's URL. Then every request can start with `{{baseUrl}}`.
 * Send one request to check that it works: `POST {{baseUrl}}/api/teams` with a team name that contains your initials and at least one member (the exact body is in `retroflow-api-reference.md`). Look at the status code and the body.
 * **Read the brief yourselves.** Don't use the AI for this part. The first prompt uses AI to understand something you've just read, so you can judge what it says.

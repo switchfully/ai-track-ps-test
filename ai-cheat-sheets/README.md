@@ -12,6 +12,8 @@ tried.
 
 - [`github-copilot-for-testing.md`](github-copilot-for-testing.md): the core tool for the
   automation-focused parts of the day.
+- [`postman-in-20-minutes.md`](postman-in-20-minutes.md): never used Postman? Start here. Collections,
+  variables, GET and POST requests, and reading a response. Do it with your partner.
 - [`postman-ai-postbot.md`](postman-ai-postbot.md): the AI features built into Postman, a tool
   most of you already use daily.
 - [`claude-code-cli.md`](claude-code-cli.md): a terminal-based alternative to Copilot, useful if
