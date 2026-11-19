@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Block 1: Prompting well</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Public+Sans:wght@400;600&family=Rubik:wght@500;600;700&display=swap">
+<style>
+:root {
+  --bg: #F5F2EA;
+  --panel: #FBF9F3;
+  --ink: #101D2E;
+  --muted: #4A5568;
+  --line: #D5CFC0;
+  --soft: #EAE5D8;
+  --accent: #0F6B5F;
+  --accent-soft: #DCEDE9;
+  --amber: #F2B33D;
+  --amber-soft: #FBEBC7;
+  --warn: #B93A26;
+  --warn-soft: #F6E0DB;
+  --code-bg: #101D2E;
+  --code-ink: #F5F2EA;
+  --head-bg: #101D2E;
+  --head-ink: #F5F2EA;
+  --head-muted: #C5CEDA;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1826;
+    --panel: #16233A;
+    --ink: #EEF1F5;
+    --muted: #B3BFCE;
+    --line: #2E4562;
+    --soft: #1B2B42;
+    --accent: #5CC2B1;
+    --accent-soft: #173A3A;
+    --amber: #F2B33D;
+    --amber-soft: #3A3020;
+    --warn: #F08A76;
+    --warn-soft: #3A2421;
+    --code-bg: #08111C;
+    --code-ink: #EEF1F5;
+    --head-bg: #08111C;
+    --head-ink: #F5F2EA;
+    --head-muted: #B3BFCE;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1826; --panel: #16233A; --ink: #EEF1F5; --muted: #B3BFCE; --line: #2E4562; --soft: #1B2B42;
+  --accent: #5CC2B1; --accent-soft: #173A3A; --amber-soft: #3A3020; --warn: #F08A76; --warn-soft: #3A2421;
+  --code-bg: #08111C; --head-bg: #08111C;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Public Sans', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+h1, h2, h3, .count, .page-title { font-family: 'Rubik', 'Public Sans', Arial, sans-serif; }
+code, pre { font-family: 'Fira Code', 'SFMono-Regular', Consolas, monospace; }
+a { color: var(--accent); }
+[hidden] { display: none !important; }
+
+.eyebrow { margin: 0 0 6px; font-size: 12px; font-weight: 600; letter-spacing: .12em; color: var(--accent); text-transform: uppercase; }
+.muted { color: var(--muted); }
+
+/* header */
+.top { background: var(--head-bg); color: var(--head-ink); padding: 28px 16px 0; }
+.top .eyebrow { color: var(--amber); }
+.top-inner { max-width: 1240px; margin: 0 auto; display: flex; gap: 24px; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; }
+.page-title { margin: 0; font-size: clamp(24px, 4vw, 34px); line-height: 1.15; }
+.intro { margin: 10px 0 0; max-width: 760px; color: var(--head-muted); }
+.counters { display: flex; gap: 28px; }
+.counters div { display: flex; flex-direction: column; align-items: flex-end; }
+.count { font-size: 30px; font-weight: 700; line-height: 1; }
+.count-label { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--head-muted); margin-top: 6px; }
+.tabs { max-width: 1240px; margin: 22px auto 0; display: flex; gap: 4px; overflow-x: auto; }
+.tab { color: var(--head-muted); text-decoration: none; padding: 10px 16px; border-radius: 10px 10px 0 0; font-weight: 600; white-space: nowrap; }
+.tab:hover { color: var(--head-ink); }
+.tab.active { background: var(--bg); color: var(--ink); }
+
+/* layout */
+.layout { max-width: 1240px; margin: 0 auto; padding: 24px 16px 64px; display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 24px; align-items: start; }
+.chooser { grid-column: 1 / -1; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 32px; max-width: 760px; }
+.chooser h2 { margin: 0 0 8px; font-size: 26px; }
+.aud-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 20px; }
+.aud { text-align: left; background: var(--bg); color: var(--ink); border: 2px solid var(--line); border-radius: 12px; padding: 16px; cursor: pointer; font: inherit; display: flex; flex-direction: column; gap: 4px; }
+.aud:hover, .aud:focus-visible { border-color: var(--accent); outline: none; }
+.aud-label { font-family: 'Rubik', Arial, sans-serif; font-weight: 600; font-size: 18px; }
+.aud-intro { margin-top: 16px; background: var(--accent-soft); border-radius: 12px; padding: 14px 18px; }
+.aud-intro p { margin: 0 0 8px; }
+.aud-intro p:last-child, .aud-intro ul:last-child { margin-bottom: 0; }
+.aud-intro ul { margin: 0 0 8px; padding-left: 20px; }
+.aud-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
+.aud-group { border: 1px solid var(--line); border-radius: 14px; padding: 18px; background: var(--bg); }
+.aud-group h3 { margin: 0 0 4px; font-size: 20px; }
+.aud-group-text { margin: 0; color: var(--muted); font-size: 15px; }
+.aud-group .aud-list { grid-template-columns: 1fr; margin-top: 14px; }
+.aud-group .aud { background: var(--panel); }
+.aud-hint { font-size: 14px; color: var(--muted); }
+
+/* sidebar */
+.sidebar { position: sticky; top: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 18px 14px; max-height: calc(100vh - 32px); overflow-y: auto; }
+.side-head { display: flex; justify-content: space-between; align-items: baseline; padding: 0 6px; }
+.side-title { margin: 0; font-family: 'Rubik', Arial, sans-serif; font-weight: 600; font-size: 18px; }
+.side-aud { margin: 2px 6px 10px; font-size: 14px; color: var(--muted); }
+.link { background: none; border: 0; color: var(--accent); font: inherit; font-size: 14px; cursor: pointer; padding: 0; text-decoration: underline; }
+.bar { height: 6px; background: var(--soft); border-radius: 3px; margin: 0 6px 14px; overflow: hidden; }
+.bar-fill { height: 100%; width: 0; background: var(--accent); border-radius: 3px; transition: width .3s; }
+.nav-group { margin-top: 10px; }
+.nav-group-title { margin: 14px 6px 4px; font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.nav-group ul { list-style: none; margin: 0; padding: 0; }
+.nav-step { display: grid; grid-template-columns: 20px 1fr auto; gap: 10px; align-items: center; padding: 7px 8px; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: 15px; line-height: 1.3; }
+.nav-step:hover { background: var(--soft); }
+.nav-step.current { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.nav-step.optional .nav-title { font-style: italic; }
+.nav-min { font-size: 12px; color: var(--muted); font-family: 'Fira Code', monospace; }
+.dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--line); display: inline-block; position: relative; }
+.nav-step.done .dot { background: var(--accent); border-color: var(--accent); }
+.nav-step.done .dot::after { content: ""; position: absolute; left: 5px; top: 1px; width: 4px; height: 9px; border: solid var(--panel); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+.reset { display: block; margin: 18px 6px 4px; font-size: 13px; color: var(--muted); }
+
+/* step */
+.step { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 28px clamp(18px, 3vw, 40px) 24px; }
+.step-title-row { display: flex; justify-content: space-between; gap: 16px; align-items: baseline; }
+.step-head h1 { margin: 0; font-size: clamp(24px, 3vw, 30px); line-height: 1.2; }
+.step-min { font-family: 'Fira Code', monospace; font-size: 13px; color: var(--muted); white-space: nowrap; }
+.content { margin-top: 18px; max-width: 820px; }
+.content p { margin: 0 0 14px; }
+.content h2.sub { font-size: 21px; margin: 32px 0 10px; padding-top: 20px; border-top: 1px solid var(--line); }
+.content h3 { font-size: 15px; letter-spacing: .06em; text-transform: uppercase; margin: 26px 0 8px; color: var(--accent); }
+.content ul, .content ol { margin: 0 0 14px; padding-left: 22px; }
+.content li { margin-bottom: 6px; }
+.content li ul { margin-top: 6px; }
+.content code { background: var(--soft); padding: 1px 6px; border-radius: 5px; font-size: .88em; }
+.lead-in { font-weight: 600; margin-bottom: 6px !important; }
+
+.where { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin: 0 0 20px; }
+.where-row { display: grid; grid-template-columns: 110px 1fr; gap: 12px; padding: 10px 16px; border-top: 1px solid var(--line); }
+.where-row:first-child { border-top: 0; }
+.where-row:last-child { background: var(--accent-soft); }
+.where-label { font-weight: 600; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); padding-top: 2px; }
+
+.goal { background: var(--accent-soft); border-left: 4px solid var(--accent); border-radius: 0 10px 10px 0; padding: 12px 16px; margin: 0 0 16px; }
+.goal p { margin: 0; }
+.callout { background: var(--amber-soft); border-left: 4px solid var(--amber); border-radius: 0 10px 10px 0; padding: 12px 16px; margin: 0 0 16px; }
+.callout.watch { background: var(--warn-soft); border-left-color: var(--warn); }
+.callout p { margin: 0; }
+
+.code { position: relative; margin: 0 0 16px; }
+.code pre { margin: 0; background: var(--code-bg); color: var(--code-ink); border-radius: 12px; padding: 18px 20px; overflow-x: auto; font-size: 14px; line-height: 1.55; }
+.code pre code { background: none; padding: 0; font-size: inherit; }
+.copy { position: absolute; top: 8px; right: 8px; background: var(--amber); color: #101D2E; border: 0; border-radius: 6px; padding: 4px 10px; font: 600 12px 'Public Sans', Arial, sans-serif; cursor: pointer; }
+
+.table-wrap { overflow-x: auto; margin: 0 0 16px; border: 1px solid var(--line); border-radius: 10px; }
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+th { background: var(--head-bg); color: var(--head-ink); text-align: left; padding: 10px 12px; font-weight: 600; }
+td { padding: 9px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+tbody tr:nth-child(even) td { background: var(--soft); }
+
+.checklist { list-style: none; padding-left: 0 !important; }
+.check { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start; cursor: pointer; }
+.check input { width: 18px; height: 18px; margin-top: 4px; accent-color: var(--accent); }
+.check input:checked + span { color: var(--muted); }
+
+.quiz { margin: 28px 0 8px; background: var(--amber-soft); border-radius: 12px; padding: 18px 20px; }
+.quiz-tag { margin: 0 0 4px !important; font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.quiz-q { font-weight: 600; }
+.quiz-opts { display: grid; gap: 8px; }
+.quiz-opt { text-align: left; background: var(--panel); color: var(--ink); border: 2px solid var(--line); border-radius: 10px; padding: 10px 14px; font: inherit; cursor: pointer; }
+.quiz-opt:hover { border-color: var(--accent); }
+.quiz-opt.right { border-color: var(--accent); background: var(--accent-soft); }
+.quiz-opt.wrong { border-color: var(--warn); background: var(--warn-soft); }
+.quiz-why { margin: 12px 0 0 !important; }
+
+.step-foot { margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--line); }
+.done-when { background: var(--accent-soft); border-radius: 10px; padding: 12px 16px; margin: 0 0 16px; }
+.step-actions { display: flex; gap: 10px; justify-content: space-between; flex-wrap: wrap; }
+.btn { font: 600 15px 'Public Sans', Arial, sans-serif; border-radius: 10px; padding: 10px 18px; cursor: pointer; border: 2px solid var(--line); background: transparent; color: var(--ink); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn.primary.is-done { background: transparent; color: var(--accent); }
+.btn:disabled { opacity: .4; cursor: default; }
+.btn:focus-visible, .copy:focus-visible, .quiz-opt:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+
+/* index */
+.index-wrap { max-width: 1000px; margin: 0 auto; padding: 28px 16px 64px; }
+.block-cards { display: grid; gap: 16px; }
+.block-card { display: flex; flex-direction: column; gap: 6px; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px; text-decoration: none; color: var(--ink); }
+.block-card:hover { border-color: var(--accent); }
+.block-tab { font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+.block-title { font-family: 'Rubik', Arial, sans-serif; font-size: 24px; font-weight: 600; }
+.block-intro { color: var(--muted); }
+.block-meta { font-size: 14px; color: var(--muted); }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+  .sidebar { position: static; max-height: none; }
+  .counters { gap: 20px; }
+  .counters div { align-items: flex-start; }
+  .where-row { grid-template-columns: 1fr; gap: 2px; }
+}
+
+</style>
+</head>
+<body data-store="ai-track-m2-te-b1">
+<!-- Generated by module-2/tools/build_block_pages.py from block1-prompt-ladders.md. Edit the .md file, not this page. -->
+<header class="top">
+  <div class="top-inner">
+    <div class="top-text">
+      <p class="eyebrow">AI Track · Module 2 · Test Engineer Day</p>
+      <h1 class="page-title">Block 1: Prompting well</h1>
+      <p class="intro">Plan, design and explore RetroFlow by hand with an AI chat. Ready-made prompts, so you learn what a good one looks like. No code.</p>
+    </div>
+    <div class="counters" aria-live="polite">
+      <div><span class="count" id="count-done">0/0</span><span class="count-label">steps done</span></div>
+      <div><span class="count" id="count-left">0′</span><span class="count-label">left, roughly</span></div>
+    </div>
+  </div>
+  <nav class="tabs" aria-label="Blocks"><a href="index.html" class="tab">Overview</a><a href="block1.html" class="tab active">Block 1</a><a href="block2.html" class="tab">Block 2</a><a href="block3.html" class="tab">Block 3</a></nav>
+</header>
+
+<main class="layout">
+  <section class="chooser" id="chooser" hidden>
+    <p class="eyebrow">BEFORE YOU START</p>
+    <h2>Which pair are you in this block?</h2>
+    <p class="muted">You only see the steps that are yours, plus the ones for everybody. Your progress is saved in this browser, so stay on this laptop for the whole block.</p>
+    <div class="aud-list"><button type="button" class="aud" data-aud="AB" data-full="Pair AB"><span class="aud-label">Pair AB</span><span class="aud-hint">Risk-based test plan and test case catalogue</span></button><button type="button" class="aud" data-aud="CD" data-full="Pair CD"><span class="aud-label">Pair CD</span><span class="aud-hint">Exploratory testing and bug reporting</span></button></div>
+  </section>
+
+  <aside class="sidebar" id="sidebar" hidden>
+    <div class="side-head">
+      <p class="side-title">Steps</p>
+      <button type="button" class="link" id="change-aud">Change</button>
+    </div>
+    <p class="side-aud" id="side-aud"></p>
+    <div class="bar" aria-hidden="true"><div class="bar-fill" id="bar-fill"></div></div>
+    <nav aria-label="Steps"><div class="nav-group" data-aud="all"><p class="nav-group-title">Start here</p><ul><li><a href="#b1-welcome" class="nav-step" data-step="b1-welcome"><span class="dot" aria-hidden="true"></span><span class="nav-title">Welcome</span><span class="nav-min">2′</span></a></li><li><a href="#b1-ideas" class="nav-step optional" data-step="b1-ideas"><span class="dot" aria-hidden="true"></span><span class="nav-title">The ideas you need</span><span class="nav-min">opt.</span></a></li><li><a href="#b1-how" class="nav-step" data-step="b1-how"><span class="dot" aria-hidden="true"></span><span class="nav-title">How this block works</span><span class="nav-min">3′</span></a></li><li><a href="#b1-setup" class="nav-step" data-step="b1-setup"><span class="dot" aria-hidden="true"></span><span class="nav-title">Setting up</span><span class="nav-min">5′</span></a></li></ul></div><div class="nav-group" data-aud="AB"><p class="nav-group-title">Pair AB</p><ul><li><a href="#ab-1" class="nav-step" data-step="ab-1"><span class="dot" aria-hidden="true"></span><span class="nav-title">Understand before you test</span><span class="nav-min">10′</span></a></li><li><a href="#ab-2" class="nav-step" data-step="ab-2"><span class="dot" aria-hidden="true"></span><span class="nav-title">Risk-based test plan</span><span class="nav-min">10′</span></a></li><li><a href="#ab-3" class="nav-step" data-step="ab-3"><span class="dot" aria-hidden="true"></span><span class="nav-title">Test case catalogue</span><span class="nav-min">10′</span></a></li><li><a href="#ab-4" class="nav-step" data-step="ab-4"><span class="dot" aria-hidden="true"></span><span class="nav-title">Run it against the live app</span><span class="nav-min">15′</span></a></li><li><a href="#ab-5" class="nav-step" data-step="ab-5"><span class="dot" aria-hidden="true"></span><span class="nav-title">Interrogate the output</span><span class="nav-min">10′</span></a></li></ul></div><div class="nav-group" data-aud="CD"><p class="nav-group-title">Pair CD</p><ul><li><a href="#cd-1" class="nav-step" data-step="cd-1"><span class="dot" aria-hidden="true"></span><span class="nav-title">Build a testing charter</span><span class="nav-min">10′</span></a></li><li><a href="#cd-2" class="nav-step" data-step="cd-2"><span class="dot" aria-hidden="true"></span><span class="nav-title">Run the session</span><span class="nav-min">25′</span></a></li><li><a href="#cd-3" class="nav-step" data-step="cd-3"><span class="dot" aria-hidden="true"></span><span class="nav-title">Read the inherited test suite</span><span class="nav-min">8′</span></a></li><li><a href="#cd-4" class="nav-step" data-step="cd-4"><span class="dot" aria-hidden="true"></span><span class="nav-title">Write up what you found</span><span class="nav-min">7′</span></a></li><li><a href="#cd-5" class="nav-step" data-step="cd-5"><span class="dot" aria-hidden="true"></span><span class="nav-title">Interrogate the output</span><span class="nav-min">5′</span></a></li></ul></div><div class="nav-group" data-aud="all"><p class="nav-group-title">Together</p><ul><li><a href="#b1-rules" class="nav-step" data-step="b1-rules"><span class="dot" aria-hidden="true"></span><span class="nav-title">Write your house rules</span><span class="nav-min">15′</span></a></li><li><a href="#b1-early" class="nav-step optional" data-step="b1-early"><span class="dot" aria-hidden="true"></span><span class="nav-title">Finished early? A second opinion</span><span class="nav-min">opt.</span></a></li><li><a href="#b1-wrap" class="nav-step" data-step="b1-wrap"><span class="dot" aria-hidden="true"></span><span class="nav-title">Before Retro 1</span><span class="nav-min"></span></a></li></ul></div></nav>
+    <button type="button" class="link reset" id="reset">Reset progress on this laptop</button>
+  </aside>
+
+  <div class="main" id="main" hidden>
+<article class="step" id="b1-welcome" data-aud="all" data-min="2" hidden><header class="step-head"><p class="eyebrow">START HERE</p><div class="step-title-row"><h1>Welcome</h1><span class="step-min">~2 min</span></div></header><div class="content"><p>Pair AB and Pair CD work in parallel. Choose in your group who is A, B, C and D, if your coach hasn't done that already.</p>
+<h2 class="sub">Let's start testing RetroFlow</h2>
+<p>This block, you plan, design test cases and explore the application by hand, all with an AI chat. <strong>Nobody writes or edits code in this block, on purpose.</strong> Whether you automate tests day to day or work entirely manually, everything below uses Postman (or a browser) and your AI chat tool. From Block 2 on, you and your pair choose between an Automation track and a Manual &amp; Exploratory track. Block 1 is the same for everyone, so there is nothing to choose yet.</p>
+<p>The goal of this block is not to find every bug. The goal is to build the testing and prompting habits that make the rest of the day faster and safer.</p>
+<p>You get ready-made prompts in this block. In Block 2 and 3 you write your own. So while you use these, look at how they're built. After most prompts you'll find a <strong>CO-STAR check</strong> that points out which parts of the prompting model are in it, and which are missing. That's how you learn to build your own.</p>
+<p>Time: <strong>75 minutes</strong>, right after the 15 minutes of theory. The last 15 minutes are for both pairs together.</p>
+<h2 class="sub">What you'll learn</h2>
+<p class="lead-in">By the end of this block you can:</p>
+<ul><li>let an AI turn a brief into risk priorities, and decide for yourself which risk comes first</li><li>build a prompt from CO-STAR parts, and tell which part carries the quality</li><li>get a test case catalogue, and check it against the real application</li><li>run a timed exploratory session with a charter</li><li>write bug reports that someone else can reproduce</li><li>write your house rules in an instructions file, and see it change an answer</li></ul></div><footer class="step-foot"><div class="step-actions"><button type="button" class="btn ghost prev">Previous</button><button type="button" class="btn primary mark">Mark as done</button><button type="button" class="btn ghost next">Next</button></div></footer></article>
+<article class="step" id="b1-ideas" data-aud="all" data-min="0" data-optional hidden><header class="step-head"><p class="eyebrow">START HERE</p><div class="step-title-row"><h1>The ideas you need</h1><span class="step-min">Optional</span></div></header><div class="content"><p>Your coach went through these on the slides. Here they are again, so you can look them up while you work.</p>
+<p><strong>An AI only knows two things: what it learned in training, and what is in front of it right now.</strong> Training gave it the general patterns: what a typical test plan or bug report looks like. It has never heard of StackCraft or RetroFlow. Those only exist in the <strong>context</strong>: your prompt, the chat so far, and the brief and responses you give it. When something is missing from the context, the AI doesn't stop and ask. It fills the gap with what is most common, and it doesn't tell you it made a choice. The brief doesn't say which status code a rejected request returns? The AI will predict one, and write it down as if it were a fact.</p>
+<h3 class="check-title"><strong>A prompting model is a checklist, so you don't forget a part.</strong> We use <strong>CO-STAR</strong>, plus three lines we always add</h3>
+<div class="table-wrap"><table><thead><tr><th>Part</th><th>The question it answers</th><th>Example from today</th></tr></thead><tbody><tr><td><strong>C</strong>ontext</td><td>What's the situation, and what should it work from?</td><td>"I'm taking over QA for RetroFlow before its first release. Here is the brief."</td></tr><tr><td><strong>O</strong>bjective</td><td>What exactly must it do? One clear job</td><td>"Make a risk-based test plan for the business rules."</td></tr><tr><td><strong>S</strong>tyle</td><td>How should it work?</td><td>"Like a test lead who has to explain the priorities to a CTO."</td></tr><tr><td><strong>T</strong>one</td><td>What attitude?</td><td>"Critical and precise. Say when you're not sure."</td></tr><tr><td><strong>A</strong>udience</td><td>Who reads the result?</td><td>"A tester who is new to the project."</td></tr><tr><td><strong>R</strong>esponse</td><td>What should the output look like?</td><td>"A table: rule, risk, how to test it, priority."</td></tr><tr><td><strong>Rules</strong></td><td>What must it do, and never do?</td><td>"Use only the brief. No code."</td></tr><tr><td><strong>Evidence</strong></td><td>How does it show its work?</td><td>"Quote the sentence of the brief behind each rule. Mark what you guess."</td></tr><tr><td><strong>Stop points</strong></td><td>Where does it hand control back?</td><td>"Make a plan first, don't write anything yet." (Block 2)</td></tr></tbody></table></div>
+<p>You don't need all of them every time. Write the objective first, then ask yourself: "What would the AI have to guess now?" Add the line that removes that guess. The <strong>Rules</strong> line is where most of the quality is decided. And give it an <strong>exit</strong>: "If the brief doesn't say, write <em>unspecified</em>." Without an exit, a model prefers a plausible answer over an honest gap.</p>
+<p><strong>Ask for less, so you can check all of it.</strong> An AI gives you as much as it can: three pages of plan, 30 test cases, 25 "gaps". All of it looks useful, and you have to check every line before you can use it. That's where the time goes. So limit it in the prompt: "At most 10 points, the most important first." or "Only the 5 biggest risks." You can always ask for more later. It's a <strong>Response</strong> line, and it's the one people forget most.</p>
+<p><strong>Give it the evidence, not your memory of it.</strong> Paste the brief, not your summary of it. Paste the real response, not "it gave an error". Your summary already holds your assumptions. The source and the response are the truth.</p>
+<p><strong>A predicted response is not a result.</strong> The AI can tell you what it <em>expects</em> the API to return. Only Postman can tell you what it <em>does</em> return. A test case you didn't run is not a pass.</p>
+<h3 class="check-title"><strong>You can't check everything, so check in this order.</strong> From cheap to expensive</h3>
+<ul class="checklist"><li><label class="check"><input type="checkbox" data-check="b1-ideas-c1"><span><strong>Let a machine check it.</strong> Send the request. Look at the real status code and body.</span></label></li><li><label class="check"><input type="checkbox" data-check="b1-ideas-c2"><span><strong>Look up what it quoted.</strong> A quote you can't find in the brief is invented.</span></label></li><li><label class="check"><input type="checkbox" data-check="b1-ideas-c3"><span><strong>Read the lines that hurt.</strong> Business rules, status codes, the body of an error. Skip the boilerplate.</span></label></li><li><label class="check"><input type="checkbox" data-check="b1-ideas-c4"><span><strong>Ask it back.</strong> "What did you assume? What would this test case not catch?" This only works if you know enough to judge the answer.</span></label></li><li><label class="check"><input type="checkbox" data-check="b1-ideas-c5"><span><strong>Get a second opinion.</strong> A new chat or another model. Not the same chat: it tends to agree with itself.</span></label></li></ul></div><footer class="step-foot"><div class="step-actions"><button type="button" class="btn ghost prev">Previous</button><button type="button" class="btn primary mark">Mark as done</button><button type="button" class="btn ghost next">Next</button></div></footer></article>
+<article class="step" id="b1-how" data-aud="all" data-min="3" hidden><header class="step-head"><p class="eyebrow">START HERE</p><div class="step-title-row"><h1>How this block works</h1><span class="step-min">~3 min</span></div></header><div class="content"><p><strong>The application is already running for you.</strong> Your coach gives your group a URL. That is RetroFlow, and everything today happens against it. There is nothing to install or start. Wherever a prompt below says <code>localhost:8080</code>, use your group's URL instead. The endpoints are listed in <code>retroflow-api-reference.md</code>.</p>
+<div class="callout"><p>Your group shares one instance of the app, so you will see each other's data in lists. Give every team you create a name that contains your own initials, and you'll always know which data is yours.</p></div>
+<p><strong>The course files</strong> (the QA brief, the API reference, the inherited test suite <code>RetroflowApiTest.java</code>, these exercises and the cheat sheets) are shared by your coach. You read from them. You don't change them.</p>
+<p><strong>Your working folder.</strong> Everything you create today goes in one folder for your group, called <code>retroflow-qa</code>. You rotate partners every block, and Block 2 builds on what you made in Block 1, so the folder has to be shared. Agree in your group how you do that. A git repository is the easiest, because the Automation track needs one later anyway. A shared drive folder works too. "The root of the working folder" in these exercises always means the root of <code>retroflow-qa</code>.</p>
+<h2 class="sub">How you work as a pair</h2>
+<p>Two people, one laptop. That's on purpose: one of you types, the other one thinks and checks.</p>
+<ul><li><strong>The driver</strong> types the prompt and sends the requests in Postman.</li><li><strong>The navigator</strong> reads the output with the brief next to it, and does the <strong>Sanity check time</strong> list. The navigator says "stop" when something looks off.</li><li><strong>Swap after every prompt.</strong> Everyone drives, everyone checks.</li><li><strong>Talk before you accept.</strong> Don't put anything in a file until you both agree on it. Where you disagree, that's usually where the interesting risk is.</li></ul>
+<h2 class="sub">How to read an exercise</h2>
+<p class="lead-in"><strong>Every prompt starts with the same three lines</strong>, so you always know where you stand:</p>
+<div class="where"><div class="where-row"><span class="where-label">Read</span><span>the files the prompt works with. These exist already, you don't make them.</span></div><div class="where-row"><span class="where-label">Create</span><span>the file you make or change, and where it lives. If it says <em>nothing</em>, no file changes in this step.</span></div><div class="where-row"><span class="where-label">Done when</span><span>what has to be true before you move on to the next prompt.</span></div></div>
+<p class="lead-in">Then you'll find:</p>
+<ul><li>the prompt itself, ready to send. Where it says <code>[paste ...]</code>, paste the real thing, in full</li><li>a <strong>CO-STAR check</strong>: which parts of the model are in this prompt? Take a moment to find them</li><li><strong>Sanity check time</strong>: two to four things you check by hand. Don't skip them. If you skip the check, you're not testing the AI anymore, you're just trusting it</li><li>sometimes a <strong>Watch for</strong> box: a mistake AI makes often at this point</li></ul>
+<p>Not sure what to do now? Look at Read, Create and Done when first. Still not sure? Ask your coach. It means the exercise isn't clear enough, not that you're doing it wrong.</p>
+<p><strong>Which tool?</strong> The exercises are written for an AI chat tool and Postman (or a browser). Use GitHub Copilot Chat or Claude.ai, whichever works on your laptop right now. Want to use something else? Go ahead, as long as AI does the work. The cheat sheets in <code>ai-cheat-sheets/</code> show you how the main tools work. New to Postman? Ask your partner or your coach for a two-minute tour. That's what pairs are for.</p>
+<p><strong>One chat per prompt.</strong> Start a new chat for each prompt. Long chats drift: an instruction from twenty messages ago has lost most of its weight.</p>
+<p><strong>Answer too long to check?</strong> Don't start reading. Send the prompt again in a new chat, with one extra line at the end: "At most 10 points, the most important first." Or ask in the same chat: "Give me only the 5 that matter most for StackCraft, and why." The prompts below are a starting point, not a script: adding a limit is always allowed, and usually a good idea.</p>
+<h2 class="sub">The files of the day</h2>
+<p class="lead-in">Over the day your working folder collects a few files that you make yourselves. You'll meet them in this order:</p>
+<div class="table-wrap"><table><thead><tr><th>File</th><th>Made by</th><th>In</th><th>What it is for</th></tr></thead><tbody><tr><td><code>test-plan.md</code></td><td>Pair AB</td><td>Block 1</td><td>Your risk priorities and your test plan</td></tr><tr><td><code>test-cases.md</code></td><td>Pair AB</td><td>Block 1</td><td>The test case catalogue, with the real results next to it</td></tr><tr><td><code>charter.md</code></td><td>Pair CD</td><td>Block 1</td><td>The charter for your exploratory session</td></tr><tr><td><code>session-notes.md</code></td><td>Pair CD</td><td>Block 1</td><td>What you tried, what you expected, what happened</td></tr><tr><td><code>bugs.md</code></td><td>Both pairs</td><td>Block 1</td><td>One shared list of every genuine defect</td></tr><tr><td><code>instructions.md</code></td><td>Both pairs</td><td>Block 1</td><td>Your house rules. The AI reads them before every request</td></tr><tr><td><code>prompt-log.md</code></td><td>Every pair</td><td>Block 2</td><td>Your prompts, with a one-line verdict each</td></tr><tr><td><code>decisions.md</code></td><td>Every pair</td><td>Block 2</td><td>What you decided and what you learned</td></tr><tr><td><code>pre-release-quality-report.md</code></td><td>Manual track</td><td>Block 3</td><td>The report with a release recommendation</td></tr><tr><td>the skill folder, with <code>SKILL.md</code></td><td>Every pair</td><td>Block 3</td><td>The skill you build and swap</td></tr></tbody></table></div>
+<p>Anything that is not in this table already exists in the course files.</p>
+<h2 class="sub">Your block at a glance</h2>
+<p>A rough guide, not a rule.</p>
+<div class="table-wrap"><table><thead><tr><th>Part</th><th>Pair AB</th><th>Pair CD</th><th>About</th></tr></thead><tbody><tr><td>Setting up</td><td>both</td><td>both</td><td>5 min</td></tr><tr><td>The work</td><td>Prompts 1 to 5: risks, test plan, catalogue, run it, interrogate it</td><td>Prompts 1 to 5: charter, a 25-minute session, the inherited suite, bug reports, interrogate it</td><td>55 min</td></tr><tr><td>House rules</td><td>together</td><td>together</td><td>The last 15 min. Don't skip this one, Block 2 needs it</td></tr></tbody></table></div>
+<p>Running behind? Don't skip Prompt 5, it's the most important prompt of the block for both pairs. Pair AB can shorten Prompt 2. Pair CD can shorten Prompt 3.</p></div><footer class="step-foot"><p class="done-when"><strong>Done when:</strong> what has to be true before you move on to the next prompt.</p><div class="step-actions"><button type="button" class="btn ghost prev">Previous</button><button type="button" class="btn primary mark">Mark as done</button><button type="button" class="btn ghost next">Next</button></div></footer></article>
+<article class="step" id="b1-setup" data-aud="all" data-min="5" hidden><header class="step-head"><p class="eyebrow">START HERE</p><div class="step-title-row"><h1>Setting up</h1><span class="step-min">~5 min</span></div></header><div class="content"><div class="where"><div class="where-row"><span class="where-label">Read</span><span><code>retroflow-qa-brief.md</code> and <code>retroflow-api-reference.md</code></span></div><div class="where-row"><span class="where-label">Create</span><span>the shared <code>retroflow-qa</code> folder, if nobody in your group made it yet, and a Postman collection</span></div><div class="where-row"><span class="where-label">Done when</span><span>your pair sent one request to your group's URL and saw a real response, and you both read the brief yourselves</span></div></div>
+<ul><li>In Postman, create a collection "RetroFlow" with a variable <code>baseUrl</code> set to your group's URL. Then every request can start with <code>{{baseUrl}}</code>.</li><li>Send one request to check that it works: <code>POST {{baseUrl}}/api/teams</code> with a team name that contains your initials and at least one member (the exact body is in <code>retroflow-api-reference.md</code>). Look at the status code and the body.</li><li><strong>Read the brief yourselves.</strong> Don't use the AI for this part. The first prompt uses AI to understand something you've just read, so you can judge what it says.</li></ul></div><footer class="step-foot"><p class="done-when"><strong>Done when:</strong> your pair sent one request to your group's URL and saw a real response, and you both read the brief yourselves</p><div class="step-actions"><button type="button" class="btn ghost prev">Previous</button><button type="button" class="btn primary mark">Mark as done</button><button type="button" class="btn ghost next">Next</button></div></footer></article>
+<article class="step" id="ab-1" data-aud="AB" data-min="10" hidden><header class="step-head"><p class="eyebrow">PAIR AB</p><div class="step-title-row"><h1>Understand before you test</h1><span class="step-min">~10 min</span></div></header><div class="content"><p>You are building the test strategy for RetroFlow: what to test, in what order, and why. And then you find out how the real app compares to the plan.</p>
+<h2 class="sub">Prompt 1: Understand before you test</h2>
+<div class="where"><div class="where-row"><span class="where-label">Read</span><span><code>retroflow-qa-brief.md</code></span></div><div class="where-row"><span class="where-label">Create</span><span><code>test-plan.md</code> in the root of the working folder (new file)</span></div><div class="where-row"><span class="where-label">Done when</span><span>you and your partner agreed on a risk priority order, and wrote it down</span></div></div>
+<p class="lead-in">Open a new chat. Paste the full contents of the brief and send:</p>
+<div class="code"><button class="copy" type="button" aria-label="Copy to clipboard">Copy</button><pre><code>I&#x27;m a test engineer taking over QA for a Spring Boot backend called RetroFlow, ahead of its
+first release. Here is the handover brief:
+
+[paste brief here]
+
+Explain the domain and the business rules to me as if I&#x27;m a new tester joining the team.
+Then identify which of these business rules carries the highest risk if it fails silently
+in production, and why. Be specific about the business consequence, not just &quot;this could
+be a bug.&quot;</code></pre></div>
+<p><strong>CO-STAR check:</strong> there's a Context (the project and the brief), an Objective (explain, then rank the risks), an Audience (a new tester) and a bit of Response ("be specific about the business consequence"). What's missing? The <strong>Rules</strong> and <strong>Evidence</strong> lines. Try it: add <em>"Quote the sentence of the brief for every rule you mention."</em> and run it again in a <strong>new</strong> chat. Which version is easier to check?</p>
+<h3 class="check-title">Sanity check time</h3>
+<ul class="checklist"><li><label class="check"><input type="checkbox" data-check="ab-1-c1"><span>Do you agree with the risk ranking? What would you rank differently, and why?</span></label></li><li><label class="check"><input type="checkbox" data-check="ab-1-c2"><span>AI tends to rank on generic API intuition. Check it against what the CTO says in the brief: what does StackCraft actually worry about?</span></label></li><li><label class="check"><input type="checkbox" data-check="ab-1-c3"><span>Write your agreed priorities in <code>test-plan.md</code>. You'll refer back to them all day.</span></label></li></ul>
+<div class="callout watch"><p><strong>Watch for:</strong> a ranking that sounds reasonable for any API, but ignores what this brief says matters. The ranking is yours, not the AI's.</p></div></div><footer class="step-foot"><p class="done-when"><strong>Done when:</strong> you and your partner agreed on a risk priority order, and wrote it down</p><div class="step-actions"><button type="button" class="btn ghost prev">Previous</button><button type="button" class="btn primary mark">Mark as done</button><button type="button" class="btn ghost next">Next</button></div></footer></article>
+<article class="step" id="ab-2" data-aud="AB" data-min="10" hidden><header class="step-head"><p class="eyebrow">PAIR AB</p><div class="step-title-row"><h1>Risk-based test plan</h1><span class="step-min">~10 min</span></div></header><div class="content"><div class="where"><div class="where-row"><span class="where-label">Read</span><span>the brief and your <code>test-plan.md</code></span></div><div class="where-row"><span class="where-label">Create</span><span>the plan itself, added to <code>test-plan.md</code></span></div><div class="where-row"><span class="where-label">Done when</span><span>the plan matches your own judgement and not just the AI's, and concurrency has a clear place in the priority order</span></div></div>
+<div class="code"><button class="copy" type="button" aria-label="Copy to clipboard">Copy</button><pre><code>Based on this domain brief, propose a risk-based test plan for RetroFlow covering:
+- Test levels to use (API-level, integration, exploratory) and why
+- Entry and exit criteria for this QA pass
+- A risk matrix: for each business rule, rate likelihood of a defect and impact if it ships,
+  and use that to set testing priority order
+- Environments and test data needed
+
+Explain your reasoning for the priority order, not just the ranking itself.</code></pre></div>
+<p><strong>CO-STAR check:</strong> an Objective with a detailed <strong>Response</strong> (four parts), and a <strong>Style</strong> line at the end ("explain your reasoning"). That last line is the <strong>ask for the reasoning</strong> technique: when you see why it ranked something, you can disagree with the why, not just the order.</p>
+<h3 class="check-title">Sanity check time</h3>
+<ul class="checklist"><li><label class="check"><input type="checkbox" data-check="ab-2-c1"><span>Compare the plan with your own order from Prompt 1. Where does it differ, and who's right?</span></label></li><li><label class="check"><input type="checkbox" data-check="ab-2-c2"><span>Does concurrency (two people acting on the same retrospective at once) rank high enough, for a tool that is collaborative by design?</span></label></li><li><label class="check"><input type="checkbox" data-check="ab-2-c3"><span>Don't copy blindly. Adapt the plan to your team's judgement, then save it.</span></label></li></ul>
+<div class="callout watch"><p><strong>Watch for:</strong> a plan of three pages that you don't have time to read. Add a limit and run it again: "Keep it to one page. At most 7 rules in the risk matrix, the riskiest first." A plan you checked beats a plan that's complete.</p></div></div><footer class="step-foot"><p class="done-when"><strong>Done when:</strong> the plan matches your own judgement and not just the AI's, and concurrency has a clear place in the priority order</p><div class="step-actions"><button type="button" class="btn ghost prev">Previous</button><button type="button" class="btn primary mark">Mark as done</button><button type="button" class="btn ghost next">Next</button></div></footer></article>
+<article class="step" id="ab-3" data-aud="AB" data-min="10" hidden><header class="step-head"><p class="eyebrow">PAIR AB</p><div class="step-title-row"><h1>Test case catalogue</h1><span class="step-min">~10 min</span></div></header><div class="content"><div class="where"><div class="where-row"><span class="where-label">Read</span><span>the brief, <code>test-plan.md</code> and <code>retroflow-api-reference.md</code></span></div><div class="where-row"><span class="where-label">Create</span><span><code>test-cases.md</code> in the root of the working folder (new file)</span></div><div class="where-row"><span class="where-label">Done when</span><span>the catalogue covers all four core rules, with three separate cases for the closed-retrospective rule</span></div></div><div class="quiz"><p class="quiz-tag">Predict it, before you read on</p><p class="quiz-q">The catalogue says a request on a closed retrospective is rejected with 409. The brief never mentions a status code. Where does the 409 come from?</p><div class="quiz-opts"><button type="button" class="quiz-opt" data-correct="0">From the brief, between the lines</button><button type="button" class="quiz-opt" data-correct="1">It’s the AI’s guess: mark it as an assumption, or write “unspecified”</button><button type="button" class="quiz-opt" data-correct="0">From the HTTP spec, so it’s certain</button></div><p class="quiz-why" hidden>When the brief is silent, the AI fills the gap with what is common, and doesn’t tell you it chose. Only the real response, or a decision someone makes, settles it.</p></div>
+<div class="code"><button class="copy" type="button" aria-label="Copy to clipboard">Copy</button><pre><code>Write a structured test case catalogue for the following RetroFlow flows. For each test case,
+include: ID, preconditions, steps, expected result, and which business rule it verifies.
+
+Flows to cover:
+- Creating a team (including the &quot;at least one member&quot; rule)
+- Creating a retrospective (including the &quot;only one OPEN at a time&quot; rule)
+- Closing a retrospective (including the &quot;cannot be reopened&quot; rule)
+- Adding a feedback item to an OPEN retrospective
+- Adding, modifying, or deleting a feedback item in a CLOSED retrospective
+
+Include both positive and negative cases for each flow.</code></pre></div>
+<p><strong>CO-STAR check:</strong> an <strong>Objective</strong> and a precise <strong>Response</strong> (the fields per test case). What's missing is an <strong>exit</strong>. Where the brief doesn't say what the response should be, the AI will make one up. Try adding <em>"Where the brief doesn't say what the expected response is, write 'unspecified' instead of guessing."</em></p>
+<h3 class="check-title">Sanity check time</h3>
+<ul class="checklist"><li><label class="check"><input type="checkbox" data-check="ab-3-c1"><span>Does the catalogue cover all three operations of the closed-retrospective rule: add, modify AND delete? That's three separate test cases, not one.</span></label></li><li><label class="check"><input type="checkbox" data-check="ab-3-c2"><span>Look at the expected status codes. Where did the AI get them from? If the brief doesn't say, they are predictions, not facts. Mark them as assumptions.</span></label></li><li><label class="check"><input type="checkbox" data-check="ab-3-c3"><span>Add a column "Actual result" to <code>test-cases.md</code>. You fill it in during the next prompt.</span></label></li></ul></div><footer class="step-foot"><p class="done-when"><strong>Done when:</strong> the catalogue covers all four core rules, with three separate cases for the closed-retrospective rule</p><div class="step-actions"><button type="button" class="btn ghost prev">Previous</button><button type="button" class="btn primary mark">Mark as done</button><button type="button" class="btn ghost next">Next</button></div></footer></article>
+<article class="step" id="ab-4" data-aud="AB" data-min="15" hidden><header class="step-head"><p class="eyebrow">PAIR AB</p><div class="step-title-row"><h1>Run it against the live app</h1><span class="step-min">~15 min</span></div></header><div class="content"><div class="where"><div class="where-row"><span class="where-label">Read</span><span><code>test-cases.md</code>, <code>retroflow-api-reference.md</code> and your group's URL</span></div><div class="where-row"><span class="where-label">Create</span><span>the real results in <code>test-cases.md</code>, and the first entries in <code>bugs.md</code> (new file)</span></div><div class="where-row"><span class="where-label">Done when</span><span>at least 3 test cases ran against the live app, with the real status code and body written down</span></div></div><div class="quiz"><p class="quiz-tag">Predict it, before you read on</p><p class="quiz-q">You ran 3 of your 12 test cases in Postman. The other 9 look straightforward. What goes in their “Actual result” column?</p><div class="quiz-opts"><button type="button" class="quiz-opt" data-correct="0">The response the AI predicted</button><button type="button" class="quiz-opt" data-correct="1">“Not run”</button><button type="button" class="quiz-opt" data-correct="0">“Pass”, they match the brief</button></div><p class="quiz-why" hidden>A predicted response is not a result, and a case you didn’t run is not a pass. Only Postman tells you what the API really returns.</p></div>
+<p>No test code today, just Postman (or a browser, or curl if you're comfortable with it) and your own hands.</p>
+<div class="code"><button class="copy" type="button" aria-label="Copy to clipboard">Copy</button><pre><code>Here is my test case catalogue: [paste it]. For each test case, tell me exactly what request
+to send (method, URL, headers if any, and body if any) so I can enter it into Postman by hand.
+Present it as a simple table: test case ID, request, and what response you&#x27;d expect.</code></pre></div>
+<p><strong>CO-STAR check:</strong> a <strong>Context</strong> (your own catalogue, pasted), an <strong>Objective</strong> and a <strong>Response</strong> ("a simple table"). Notice that the AI only gives you a <em>prediction</em> of the response here. The result comes from Postman.</p>
+<h3 class="check-title">Sanity check time</h3>
+<ul class="checklist"><li><label class="check"><input type="checkbox" data-check="ab-4-c1"><span>Build each request in Postman one at a time (or reuse one your partner already made) and actually send it to the running app. Check the request against <code>retroflow-api-reference.md</code> before you send it: did the AI invent a path or a field?</span></label></li><li><label class="check"><input type="checkbox" data-check="ab-4-c2"><span>Write the real status code and body next to the prediction in <code>test-cases.md</code>. Don't assume they match. Look.</span></label></li><li><label class="check"><input type="checkbox" data-check="ab-4-c3"><span>A case you didn't run is not a pass. Mark it "not run".</span></label></li><li><label class="check"><input type="checkbox" data-check="ab-4-c4"><span>An endpoint returns a raw stack trace, or a status code you didn't expect? Don't fix it or explain it away yet. Log it in <code>bugs.md</code>.</span></label></li><li><label class="check"><input type="checkbox" data-check="ab-4-c5"><span>Are the status codes correct by REST conventions (201 for creating, 404 for not found)? Check a few yourselves, don't just trust the AI's claim.</span></label></li></ul></div><footer class="step-foot"><p class="done-when"><strong>Done when:</strong> at least 3 test cases ran against the live app, with the real status code and body written down</p><div class="step-actions"><button type="button" class="btn ghost prev">Previous</button><button type="button" class="btn primary mark">Mark as done</button><button type="button" class="btn ghost next">Next</button></div></footer></article>
+<article class="step" id="ab-5" data-aud="AB" data-min="10" hidden><header class="step-head"><p class="eyebrow">PAIR AB</p><div class="step-title-row"><h1>Interrogate the output</h1><span class="step-min">~10 min</span></div></header><div class="content"><div class="where"><div class="where-row"><span class="where-label">Read</span><span><code>test-cases.md</code> with your results, and the brief</span></div><div class="where-row"><span class="where-label">Create</span><span>the missing test cases, added to <code>test-cases.md</code></span></div><div class="where-row"><span class="where-label">Done when</span><span>for every one of the four rules you know if it has coverage, and what that test would not catch</span></div></div>
+<p>This is the most important prompt of the block. Don't skip it.</p>
+<div class="code"><button class="copy" type="button" aria-label="Copy to clipboard">Copy</button><pre><code>Review the test case catalogue and the actual results I recorded against these specific
+business rules from the brief. For each rule, tell me:
+1. Whether it currently has explicit test coverage in the catalogue
+2. Where exactly (which test case)
+3. What kind of defect this test case would and would NOT catch
+
+Business rules to check:
+- A team can only have one OPEN retrospective at a time
+- A closed retrospective cannot be reopened
+- Feedback items in a closed retrospective cannot be modified or deleted
+- Completed action items cannot be uncompleted</code></pre></div>
+<p><strong>CO-STAR check:</strong> the Objective is a <em>review</em>, and the Response is a fixed structure of three answers per rule. "Where exactly (which test case)" is <strong>Evidence</strong>: you can look it up. Notice what you did: you asked the AI to check the work. That's step 4 of the checking order. It only works if you know enough to judge the answer, so the navigator keeps the brief and the recorded results open next to it.</p>
+<h3 class="check-title">Sanity check time</h3>
+<ul class="checklist"><li><label class="check"><input type="checkbox" data-check="ab-5-c1"><span>This is your quality gate. Anything with "no coverage" gets a test case before the block ends.</span></label></li><li><label class="check"><input type="checkbox" data-check="ab-5-c2"><span>Look hard at point 3, "what this test would NOT catch". A test case that checks the happy path of a rule, but not a concurrent or deliberate attempt to break it, is incomplete, even if it exists.</span></label></li><li><label class="check"><input type="checkbox" data-check="ab-5-c3"><span>Did the AI call a rule "covered" because a case with a matching name exists? Check the recorded result. A case that exists is not a case that ran and passed.</span></label></li></ul></div><footer class="step-foot"><p class="done-when"><strong>Done when:</strong> for every one of the four rules you know if it has coverage, and what that test would not catch</p><div class="step-actions"><button type="button" class="btn ghost prev">Previous</button><button type="button" class="btn primary mark">Mark as done</button><button type="button" class="btn ghost next">Next</button></div></footer></article>
+<article class="step" id="cd-1" data-aud="CD" data-min="10" hidden><header class="step-head"><p class="eyebrow">PAIR CD</p><div class="step-title-row"><h1>Build a testing charter</h1><span class="step-min">~10 min</span></div></header><div class="content"><p>You are setting up the exploratory side of QA: a testing charter, a hands-on session against the running application, an honest read of the tests you inherited, and bug reports that would survive scrutiny.</p>
+<h2 class="sub">Prompt 1: Build an exploratory testing charter</h2>
+<div class="where"><div class="where-row"><span class="where-label">Read</span><span><code>retroflow-qa-brief.md</code></span></div><div class="where-row"><span class="where-label">Create</span><span><code>charter.md</code> in the root of the working folder (new file)</span></div><div class="where-row"><span class="where-label">Done when</span><span>the charter points at the highest-risk areas, including the parts of the brief that are underspecified</span></div></div>
+<p class="lead-in">Open a new chat. Paste the full brief and send:</p>
+<div class="code"><button class="copy" type="button" aria-label="Copy to clipboard">Copy</button><pre><code>I&#x27;m a test engineer preparing an exploratory testing session for RetroFlow, a Spring Boot
+backend for running team retrospectives. Here is the handover brief:
+
+[paste brief here]
+
+Generate an exploratory testing charter covering:
+- The main happy-path flows to explore first
+- Likely edge cases given the business rules (timing boundaries, permission-adjacent
+  behaviour, concurrent actions, invalid or missing input)
+- Anything in this brief that looks underspecified or worth probing deliberately
+
+Keep it as a focused, time-boxed session plan, not an exhaustive checklist.</code></pre></div>
+<p><strong>CO-STAR check:</strong> a <strong>Context</strong> (you, the session, the brief), an <strong>Objective</strong> (a charter) and a <strong>Response</strong> with three parts and a size limit ("focused, not exhaustive"). What would make it sharper? A <strong>Rule</strong> like <em>"Aim it at the highest risk, and give at least two deliberate attempts to break a rule."</em></p>
+<h3 class="check-title">Sanity check time</h3>
+<ul class="checklist"><li><label class="check"><input type="checkbox" data-check="cd-1-c1"><span>Does the charter really point you at the highest-risk areas, or just at the obvious ones? Adjust it with your partner if it doesn't.</span></label></li><li><label class="check"><input type="checkbox" data-check="cd-1-c2"><span>The "underspecified" section matters most. That's usually where a real bug is hiding.</span></label></li><li><label class="check"><input type="checkbox" data-check="cd-1-c3"><span>A good charter has a risk in it. "Test the API" isn't a charter.</span></label></li></ul></div><footer class="step-foot"><p class="done-when"><strong>Done when:</strong> the charter points at the highest-risk areas, including the parts of the brief that are underspecified</p><div class="step-actions"><button type="button" class="btn ghost prev">Previous</button><button type="button" class="btn primary mark">Mark as done</button><button type="button" class="btn ghost next">Next</button></div></footer></article>
+<article class="step" id="cd-2" data-aud="CD" data-min="25" hidden><header class="step-head"><p class="eyebrow">PAIR CD</p><div class="step-title-row"><h1>Run the session</h1><span class="step-min">~25 min</span></div></header><div class="content"><div class="where"><div class="where-row"><span class="where-label">Read</span><span><code>charter.md</code>, <code>retroflow-api-reference.md</code> and your group's URL</span></div><div class="where-row"><span class="where-label">Create</span><span><code>session-notes.md</code> in the root of the working folder (new file)</span></div><div class="where-row"><span class="where-label">Done when</span><span>you tested for at least 25 minutes, with real notes in the format below, including the race attempt and the three separate operations on a closed retrospective</span></div></div>
+<p>This one isn't a prompt. Set a timer for 25 minutes. Using Postman (point-and-click, no scripting) or a browser, work through your charter against the running app. Keep running notes in <code>session-notes.md</code>, in this format, for anything notable:</p>
+<div class="code"><button class="copy" type="button" aria-label="Copy to clipboard">Copy</button><pre><code>What I tried:
+What I expected:
+What actually happened:
+Worth a closer look? Y/N</code></pre></div>
+<p class="lead-in">What to do during the session:</p>
+<ul><li><strong>Race the "only one OPEN retrospective" rule.</strong> Create a retrospective. Then you and your partner both try to create a second one for the same team, within a second or two of each other: each has the request ready in Postman, and you send on "go". This is a manual approximation of a race condition, and it's a real testing technique, not a compromise for not writing code. Try it more than once: a race doesn't always show up the first time.</li><li><strong>Try the three operations on a closed retrospective one by one:</strong> add, modify and delete a feedback item. Don't assume they behave the same because they're related.</li><li><strong>Follow anything that surprises you.</strong> That's the point of exploratory testing.</li></ul>
+<h3 class="check-title">Sanity check time</h3>
+<ul class="checklist"><li><label class="check"><input type="checkbox" data-check="cd-2-c1"><span>Found something odd? Reproduce it a second time before you move on. A bug you can't reproduce twice is weak evidence.</span></label></li><li><label class="check"><input type="checkbox" data-check="cd-2-c2"><span>Did you write down the attempts where nothing went wrong too? That's evidence as well.</span></label></li></ul></div><footer class="step-foot"><p class="done-when"><strong>Done when:</strong> you tested for at least 25 minutes, with real notes in the format below, including the race attempt and the three separate operations on a closed retrospective</p><div class="step-actions"><button type="button" class="btn ghost prev">Previous</button><button type="button" class="btn primary mark">Mark as done</button><button type="button" class="btn ghost next">Next</button></div></footer></article>
+<article class="step" id="cd-3" data-aud="CD" data-min="8" hidden><header class="step-head"><p class="eyebrow">PAIR CD</p><div class="step-title-row"><h1>Read the inherited test suite</h1><span class="step-min">~8 min</span></div></header><div class="content"><div class="where"><div class="where-row"><span class="where-label">Read</span><span><code>RetroflowApiTest.java</code> (to read, not to run) and your <code>session-notes.md</code></span></div><div class="where-row"><span class="where-label">Create</span><span>a short section "Inherited test suite" at the bottom of <code>session-notes.md</code></span></div><div class="where-row"><span class="where-label">Done when</span><span>you can say in plain language which tests would catch a real regression and which would pass whatever the API returned</span></div></div><div class="quiz"><p class="quiz-tag">Predict it, before you read on</p><p class="quiz-q">A test only checks assertThat(result).isNotNull(). When does it fail?</p><div class="quiz-opts"><button type="button" class="quiz-opt" data-correct="0">When the status code is wrong</button><button type="button" class="quiz-opt" data-correct="1">Almost never: it’s green whatever the API returns</button><button type="button" class="quiz-opt" data-correct="0">When the API returns the wrong data</button></div><p class="quiz-why" hidden>Almost every response has a body, so the check passes no matter what is in it. Green, but it proves nothing.</p></div>
+<p>You don't need to read Java to do this. Let the AI translate it, then you make the call.</p>
+<div class="code"><button class="copy" type="button" aria-label="Copy to clipboard">Copy</button><pre><code>Here is an existing automated test suite for a Spring Boot project:
+
+[paste the contents of RetroflowApiTest.java, the test suite the developers left behind]
+
+For each test, explain in plain English, no code, what it actually checks, and rate whether
+that check would catch a real regression or would pass no matter what the API returned. Flag
+any test that only checks &quot;not null&quot; or a status code when the endpoint&#x27;s whole purpose is to
+return specific data.</code></pre></div>
+<p><strong>CO-STAR check:</strong> an <strong>Audience</strong> that doesn't read code ("plain English, no code"), a <strong>Response</strong> per test (explain, then rate) and a <strong>Rule</strong> that tells it what to flag. The flag line is what turns a summary into a review.</p>
+<h3 class="check-title">Sanity check time</h3>
+<ul class="checklist"><li><label class="check"><input type="checkbox" data-check="cd-3-c1"><span>You're judging the plain-language explanation, not the code. Does each described check sound like it would catch something going wrong?</span></label></li><li><label class="check"><input type="checkbox" data-check="cd-3-c2"><span>Cross-check a couple of the "weak" flags against what you saw yourselves in the session. Do they line up?</span></label></li><li><label class="check"><input type="checkbox" data-check="cd-3-c3"><span>A test that checks only "not null" is green whatever the code does. Keep that in mind for Retro 1: the inherited suite passes, but does it prove anything?</span></label></li></ul></div><footer class="step-foot"><p class="done-when"><strong>Done when:</strong> you can say in plain language which tests would catch a real regression and which would pass whatever the API returned</p><div class="step-actions"><button type="button" class="btn ghost prev">Previous</button><button type="button" class="btn primary mark">Mark as done</button><button type="button" class="btn ghost next">Next</button></div></footer></article>
+<article class="step" id="cd-4" data-aud="CD" data-min="7" hidden><header class="step-head"><p class="eyebrow">PAIR CD</p><div class="step-title-row"><h1>Write up what you found</h1><span class="step-min">~7 min</span></div></header><div class="content"><div class="where"><div class="where-row"><span class="where-label">Read</span><span><code>session-notes.md</code></span></div><div class="where-row"><span class="where-label">Create</span><span>the reports, in <code>bugs.md</code>. Pair AB started that file, so add to theirs</span></div><div class="where-row"><span class="where-label">Done when</span><span>every genuine issue has a report with severity, steps to reproduce, expected result, actual result and business impact, in one shared list</span></div></div>
+<div class="code"><button class="copy" type="button" aria-label="Copy to clipboard">Copy</button><pre><code>Here are my raw session notes from exploratory testing: [paste session-notes.md]. Write these
+up as clear bug reports, one per genuine issue, with a title, severity (Critical / High /
+Medium / Low), steps to reproduce, expected result, actual result, and business impact. Keep it
+factual, don&#x27;t guess at the root cause, and don&#x27;t invent an issue that isn&#x27;t in my notes.</code></pre></div>
+<p><strong>CO-STAR check:</strong> a <strong>Context</strong> (your own notes), a precise <strong>Response</strong> (the fields of a report) and strong <strong>Rules</strong> ("factual", "don't guess", "don't invent"). Those rules are there because a model writing a bug report likes to add a plausible root cause.</p>
+<h3 class="check-title">Sanity check time</h3>
+<ul class="checklist"><li><label class="check"><input type="checkbox" data-check="cd-4-c1"><span>Reproduce <strong>every</strong> report once more in Postman, from the steps as written. A step the AI invented shows up now.</span></label></li><li><label class="check"><input type="checkbox" data-check="cd-4-c2"><span>Is the severity argued from the business impact? "High" for a missing field is probably inflated.</span></label></li><li><label class="check"><input type="checkbox" data-check="cd-4-c3"><span>Did it stay factual, or did it speculate about the cause? Compare each report with your own notes.</span></label></li><li><label class="check"><input type="checkbox" data-check="cd-4-c4"><span>Merge it into the same <code>bugs.md</code> as Pair AB. One list for the whole team.</span></label></li></ul></div><footer class="step-foot"><p class="done-when"><strong>Done when:</strong> every genuine issue has a report with severity, steps to reproduce, expected result, actual result and business impact, in one shared list</p><div class="step-actions"><button type="button" class="btn ghost prev">Previous</button><button type="button" class="btn primary mark">Mark as done</button><button type="button" class="btn ghost next">Next</button></div></footer></article>
+<article class="step" id="cd-5" data-aud="CD" data-min="5" hidden><header class="step-head"><p class="eyebrow">PAIR CD</p><div class="step-title-row"><h1>Interrogate the output</h1><span class="step-min">~5 min</span></div></header><div class="content"><div class="where"><div class="where-row"><span class="where-label">Read</span><span>the brief, <code>session-notes.md</code> and <code>bugs.md</code></span></div><div class="where-row"><span class="where-label">Create</span><span>nothing new. Extra findings go into <code>session-notes.md</code> and <code>bugs.md</code></span></div><div class="where-row"><span class="where-label">Done when</span><span>you know which of the four rules you haven't tried to break yet, and you tried at least one of them</span></div></div>
+<p>This is the most important prompt of the block. Don't skip it.</p>
+<div class="code"><button class="copy" type="button" aria-label="Copy to clipboard">Copy</button><pre><code>Based on the RetroFlow brief&#x27;s business rules, what have I not tried yet in my exploratory
+session that a thorough tester would? Be specific about which business rule each gap relates
+to, not just &quot;test more edge cases.&quot;
+
+Business rules to check against:
+- A team can only have one OPEN retrospective at a time
+- A closed retrospective cannot be reopened
+- Feedback items in a closed retrospective cannot be modified or deleted
+- Completed action items cannot be uncompleted</code></pre></div>
+<p><strong>CO-STAR check:</strong> the Objective is a <em>gap analysis</em> of your own work, and the <strong>Rule</strong> "be specific about which business rule" stops a generic answer. Without it, you get "test more edge cases", which you can't act on.</p>
+<h3 class="check-title">Sanity check time</h3>
+<ul class="checklist"><li><label class="check"><input type="checkbox" data-check="cd-5-c1"><span>This is your quality gate. Anything flagged as untried: try it now if time allows, or carry it forward into Block 2 and write that down.</span></label></li><li><label class="check"><input type="checkbox" data-check="cd-5-c2"><span>Paste your session notes too, if you didn't. An AI can only say what you haven't tried if it knows what you did try.</span></label></li></ul></div><footer class="step-foot"><p class="done-when"><strong>Done when:</strong> you know which of the four rules you haven't tried to break yet, and you tried at least one of them</p><div class="step-actions"><button type="button" class="btn ghost prev">Previous</button><button type="button" class="btn primary mark">Mark as done</button><button type="button" class="btn ghost next">Next</button></div></footer></article>
+<article class="step" id="b1-rules" data-aud="all" data-min="15" hidden><header class="step-head"><p class="eyebrow">TOGETHER</p><div class="step-title-row"><h1>Write your house rules</h1><span class="step-min">~15 min</span></div></header><div class="content"><div class="where"><div class="where-row"><span class="where-label">Read</span><span>the prompts of this block that worked best, from both pairs, and your <code>bugs.md</code></span></div><div class="where-row"><span class="where-label">Create</span><span><code>instructions.md</code> in the root of the working folder (new file), and a copy in the place where your AI tool reads it</span></div><div class="where-row"><span class="where-label">Done when</span><span>the file is saved in the shared folder, it has the three required rules, and you saw it change an answer</span></div></div>
+<p>By now you've probably typed "paste the real response", "label what you assumed", "check the status code and the body" or "at most 10 points" more than once. That's annoying, and it's easy to forget one. So you write them down once, in a place where the AI reads them before <strong>every</strong> request. That's an <strong>instructions file</strong>.</p>
+<p><strong>What goes in:</strong> your role and the source of truth, how a test case and a bug report look, what makes a check good, and what the AI must never do. <strong>What stays out:</strong> things any model knows ("be thorough"), long explanations, and rules for one single task. Write rules you can <strong>check</strong>. "Write good tests" is a wish. "Every check names the exact status code and at least one field in the body" is a rule.</p>
+<p class="lead-in">Let the AI draft it from your own prompts:</p>
+<div class="code"><button class="copy" type="button" aria-label="Copy to clipboard">Copy</button><pre><code>Based on the prompts we used this morning [paste 2 or 3 of your best prompts], write a
+short set of standing instructions for an AI assistant helping us test RetroFlow. Cover:
+our role, what the source of truth is, how it must treat a predicted response versus a real
+one, the format of a test case and of a bug report, what makes an assertion good, how long
+its answers may be, and what it must never do. Keep it under 20 lines.</code></pre></div>
+<p>Then <strong>edit it yourselves</strong>, as a team of four. Keep it to 10 to 20 lines. It must contain at least these three rules, in your own words:</p>
+<ol><li>The AI never presents a predicted response as a fact. It writes what it expects, and waits for the real status code and body.</li><li>Every claim points at a source: a sentence from the brief, or a response you pasted. Anything else it assumed gets labelled as an assumption.</li><li>Answers stay short: at most 10 points, the most important first. More only when you ask for it. A list of 40 findings costs you the block, because you have to check every one.</li></ol>
+<p class="lead-in">Put a copy where your tool reads it:</p>
+<div class="table-wrap"><table><thead><tr><th>Tool</th><th>Where</th></tr></thead><tbody><tr><td>GitHub Copilot</td><td><code>.github/copilot-instructions.md</code> in the working folder</td></tr><tr><td>Claude Code</td><td><code>CLAUDE.md</code> in the root of the working folder</td></tr><tr><td>Claude.ai</td><td>The instructions of a Project</td></tr><tr><td>Microsoft 365 Copilot</td><td>Settings, Personalization, Custom instructions</td></tr></tbody></table></div>
+<p>In Block 2 the agent reads this file automatically, if it's in the right place.</p>
+<h3 class="check-title">Sanity check time</h3>
+<ul class="checklist"><li><label class="check"><input type="checkbox" data-check="b1-rules-c1"><span>Start a <strong>new</strong> chat and run one of your earlier prompts again, but without the extra rules you typed in. Does the answer still follow them?</span></label></li><li><label class="check"><input type="checkbox" data-check="b1-rules-c2"><span>Ask: "Write a test case for creating a retrospective." Does it name an exact status code and a field in the body, and does it mark the status code as an assumption if the brief doesn't give it?</span></label></li><li><label class="check"><input type="checkbox" data-check="b1-rules-c3"><span>Ask the chat: "Which instructions do you have?" Can it list them?</span></label></li><li><label class="check"><input type="checkbox" data-check="b1-rules-c4"><span>Ask for something that invites a long list, like "What could go wrong with RetroFlow?" Do you get at most 10 points, the most important first?</span></label></li></ul>
+<div class="callout watch"><p><strong>Watch for:</strong> an instructions file makes the right behaviour <em>more likely</em>, not certain. You still check. Want to know what each tool supports exactly? <code>ai-cheat-sheets/working-efficiently.md</code>.</p></div></div><footer class="step-foot"><p class="done-when"><strong>Done when:</strong> the file is saved in the shared folder, it has the three required rules, and you saw it change an answer</p><div class="step-actions"><button type="button" class="btn ghost prev">Previous</button><button type="button" class="btn primary mark">Mark as done</button><button type="button" class="btn ghost next">Next</button></div></footer></article>
+<article class="step" id="b1-early" data-aud="all" data-min="0" data-optional hidden><header class="step-head"><p class="eyebrow">TOGETHER</p><div class="step-title-row"><h1>Finished early? A second opinion</h1><span class="step-min">Optional</span></div></header><div class="content"><p>Take your catalogue prompt (Prompt 3) or your charter prompt (Prompt 1) and run it in a <strong>different model</strong>, in a fresh chat: another model in the Copilot model picker, Claude.ai, or another tool you have.</p>
+<ul><li>Which model had more cases that matter, and fewer that don't?</li><li>Which one marked what the brief doesn't say, and which one guessed?</li></ul>
+<p>Don't pick a winner for the whole world. Pick one for this kind of task, and write it down in two lines. You can share it in Retro 1.</p></div><footer class="step-foot"><div class="step-actions"><button type="button" class="btn ghost prev">Previous</button><button type="button" class="btn primary mark">Mark as done</button><button type="button" class="btn ghost next">Next</button></div></footer></article>
+<article class="step" id="b1-wrap" data-aud="all" data-min="0" hidden><header class="step-head"><p class="eyebrow">TOGETHER</p><div class="step-title-row"><h1>Before Retro 1</h1><span class="step-min"></span></div></header><div class="content"><p>This is also what we look at in Retro 1. Your coach asks one pair to show their result on the shared screen. Before Retro 1, your team should be able to answer yes to:</p>
+<p><strong>Pair AB:</strong></p>
+<ul class="checklist"><li><label class="check"><input type="checkbox" data-check="b1-wrap-c1"><span><code>test-plan.md</code> exists, with a risk priority order you agreed on</span></label></li><li><label class="check"><input type="checkbox" data-check="b1-wrap-c2"><span><code>test-cases.md</code> covers all four core rules, including all three operations of the closed-retrospective rule</span></label></li><li><label class="check"><input type="checkbox" data-check="b1-wrap-c3"><span>At least 3 test cases ran against the live app, with real results recorded</span></label></li><li><label class="check"><input type="checkbox" data-check="b1-wrap-c4"><span>You ran Prompt 5 and know which rules have no coverage yet</span></label></li></ul>
+<p><strong>Pair CD:</strong></p>
+<ul class="checklist"><li><label class="check"><input type="checkbox" data-check="b1-wrap-c5"><span><code>charter.md</code> exists and was actually followed, not just written</span></label></li><li><label class="check"><input type="checkbox" data-check="b1-wrap-c6"><span><code>session-notes.md</code> has real findings from at least 25 minutes of hands-on testing</span></label></li><li><label class="check"><input type="checkbox" data-check="b1-wrap-c7"><span>The weak assertions and gaps of the inherited suite are written down in plain language</span></label></li><li><label class="check"><input type="checkbox" data-check="b1-wrap-c8"><span>You ran Prompt 5 and know which rules you haven't tried to break yet</span></label></li></ul>
+<p><strong>Both pairs together:</strong></p>
+<ul class="checklist"><li><label class="check"><input type="checkbox" data-check="b1-wrap-c9"><span><code>bugs.md</code> is one shared list, with both pairs' findings, and every report was reproduced</span></label></li><li><label class="check"><input type="checkbox" data-check="b1-wrap-c10"><span><code>instructions.md</code> exists, has the three required rules, and you tried it in a new chat</span></label></li><li><label class="check"><input type="checkbox" data-check="b1-wrap-c11"><span>Everyone knows the actual behaviour of the app on a handful of endpoints, not just what the brief says it should do</span></label></li></ul>
+<h2 class="sub">Before Retro 1</h2>
+<p class="lead-in">Think about these with your partner, so you have an answer ready:</p>
+<ol><li>What did AI get right that surprised you?</li><li>What did it get wrong, guess or invent? How did you find out?</li><li>Did you change how you prompt during this block? What changed?</li><li>Did you find a tool, a setting or a trick the others should know about?</li></ol>
+<h2 class="sub">Conclusion</h2>
+<p>You planned, designed and explored RetroFlow with AI, and more importantly, you checked what it told you against the real app.</p>
+<p class="lead-in">You've learned:</p>
+<ul><li>how to let an AI turn a brief into risks and a plan, and why the ranking stays yours</li><li>how to build a prompt from CO-STAR parts, and that the Rules line carries most of the quality</li><li>that a predicted response is not a result, and a case you didn't run is not a pass</li><li>how to run a timed exploratory session with a charter, including a race by hand</li><li>how to write a bug report someone else can reproduce, and to reproduce it yourself first</li><li>how to write your rules down once, instead of typing them forever</li></ul>
+<p>Next block, you choose your track: an agent that writes and runs tests, or a deeper dive by hand.</p></div><footer class="step-foot"><div class="step-actions"><button type="button" class="btn ghost prev">Previous</button><button type="button" class="btn primary mark">Mark as done</button><button type="button" class="btn ghost next">Next</button></div></footer></article>
+  </div>
+</main>
+<script>
+(function () {
+  var STORE = document.body.getAttribute('data-store');
+  var steps = Array.prototype.slice.call(document.querySelectorAll('.step'));
+  var links = Array.prototype.slice.call(document.querySelectorAll('.nav-step'));
+  var groups = Array.prototype.slice.call(document.querySelectorAll('.nav-group'));
+  var audButtons = Array.prototype.slice.call(document.querySelectorAll('.aud'));
+  var chooser = document.getElementById('chooser');
+  var sidebar = document.getElementById('sidebar');
+  var main = document.getElementById('main');
+
+  // Storage can be blocked (private window, locked-down browser). The page works without it.
+  function load(key, fallback) {
+    try { var v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; }
+  }
+  function save(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* not saved, still works */ }
+  }
+
+  var aud = load(STORE + '-aud', null);
+  var state = { done: {}, checks: {} };
+  var current = null;
+
+  function forAud(el) {
+    var list = (el.getAttribute('data-aud') || 'all').split(' ');
+    return list.indexOf('all') !== -1 || list.indexOf(aud) !== -1;
+  }
+  function visibleSteps() { return steps.filter(forAud); }
+  function stateKey() { return STORE + '-' + aud; }
+
+  function audLabel() {
+    for (var i = 0; i < audButtons.length; i++) {
+      if (audButtons[i].getAttribute('data-aud') === aud) return audButtons[i].getAttribute('data-full');
+    }
+    return '';
+  }
+
+  function chooseAud(id) {
+    aud = id;
+    save(STORE + '-aud', aud);
+    state = load(stateKey(), { done: {}, checks: {} });
+    start();
+  }
+
+  function start() {
+    if (!aud || !audButtons.some(function (b) { return b.getAttribute('data-aud') === aud; })) {
+      chooser.hidden = false; sidebar.hidden = true; main.hidden = true;
+      updateCounters();
+      return;
+    }
+    state = load(stateKey(), { done: {}, checks: {} });
+    chooser.hidden = true; sidebar.hidden = false; main.hidden = false;
+    document.getElementById('side-aud').textContent = audLabel();
+    groups.forEach(function (g) { g.hidden = !forAud(g); });
+    steps.forEach(function (s) {
+      s.querySelectorAll('input[data-check]').forEach(function (cb) {
+        cb.checked = !!state.checks[cb.getAttribute('data-check')];
+      });
+    });
+    var fromHash = location.hash.slice(1);
+    var vis = visibleSteps();
+    var target = vis.filter(function (s) { return s.id === fromHash; })[0] ||
+      vis.filter(function (s) { return !state.done[s.id]; })[0] || vis[0];
+    show(target.id, false);
+  }
+
+  function show(id, scroll) {
+    var vis = visibleSteps();
+    steps.forEach(function (s) { s.hidden = s.id !== id; });
+    current = id;
+    links.forEach(function (l) {
+      var sid = l.getAttribute('data-step');
+      l.classList.toggle('current', sid === id);
+      l.classList.toggle('done', !!state.done[sid]);
+      if (sid === id) l.setAttribute('aria-current', 'step'); else l.removeAttribute('aria-current');
+    });
+    var idx = vis.map(function (s) { return s.id; }).indexOf(id);
+    var art = document.getElementById(id);
+    art.querySelector('.prev').disabled = idx <= 0;
+    art.querySelector('.next').disabled = idx >= vis.length - 1;
+    var mark = art.querySelector('.mark');
+    mark.textContent = state.done[id] ? 'Done ✓ (undo)' : 'Mark as done';
+    mark.classList.toggle('is-done', !!state.done[id]);
+    if (history.replaceState) history.replaceState(null, '', '#' + id);
+    updateCounters();
+    if (scroll) {
+      // On a narrow screen the step list sits above the step, so scroll to the step itself.
+      var anchor = window.innerWidth <= 900 ? main : document.querySelector('.layout');
+      window.scrollTo({ top: anchor.getBoundingClientRect().top + window.pageYOffset - 8, behavior: 'smooth' });
+    }
+  }
+
+  function updateCounters() {
+    var vis = aud ? visibleSteps() : [];
+    var required = vis.filter(function (s) { return !s.hasAttribute('data-optional'); });
+    var done = required.filter(function (s) { return state.done[s.id]; }).length;
+    var left = required.reduce(function (sum, s) {
+      return sum + (state.done[s.id] ? 0 : parseInt(s.getAttribute('data-min') || '0', 10));
+    }, 0);
+    document.getElementById('count-done').textContent = done + '/' + required.length;
+    document.getElementById('count-left').textContent = left + '′';
+    document.getElementById('bar-fill').style.width = required.length ? (100 * done / required.length) + '%' : '0';
+  }
+
+  function move(delta) {
+    var vis = visibleSteps().map(function (s) { return s.id; });
+    var idx = vis.indexOf(current) + delta;
+    if (idx >= 0 && idx < vis.length) show(vis[idx], true);
+  }
+
+  audButtons.forEach(function (b) {
+    b.addEventListener('click', function () { chooseAud(b.getAttribute('data-aud')); });
+  });
+  document.getElementById('change-aud').addEventListener('click', function () {
+    chooser.hidden = false; sidebar.hidden = true; main.hidden = true;
+  });
+  document.getElementById('reset').addEventListener('click', function () {
+    if (!confirm('Clear the progress of ' + audLabel() + ' on this laptop?')) return;
+    state = { done: {}, checks: {} };
+    save(stateKey(), state);
+    start();
+  });
+  links.forEach(function (l) {
+    l.addEventListener('click', function (e) { e.preventDefault(); show(l.getAttribute('data-step'), true); });
+  });
+  steps.forEach(function (s) {
+    s.querySelector('.prev').addEventListener('click', function () { move(-1); });
+    s.querySelector('.next').addEventListener('click', function () { move(1); });
+    s.querySelector('.mark').addEventListener('click', function () {
+      state.done[s.id] = !state.done[s.id];
+      save(stateKey(), state);
+      if (state.done[s.id]) {
+        var vis = visibleSteps().map(function (x) { return x.id; });
+        if (vis.indexOf(s.id) < vis.length - 1) { move(1); return; }
+      }
+      show(s.id, false);
+    });
+    s.querySelectorAll('input[data-check]').forEach(function (cb) {
+      cb.addEventListener('change', function () {
+        state.checks[cb.getAttribute('data-check')] = cb.checked;
+        save(stateKey(), state);
+      });
+    });
+    s.querySelectorAll('.quiz').forEach(function (q) {
+      var opts = q.querySelectorAll('.quiz-opt');
+      opts.forEach(function (o) {
+        o.addEventListener('click', function () {
+          var right = o.getAttribute('data-correct') === '1';
+          o.classList.add(right ? 'right' : 'wrong');
+          if (right) {
+            opts.forEach(function (x) { x.disabled = true; });
+            q.querySelector('.quiz-why').hidden = false;
+          }
+        });
+      });
+    });
+  });
+  document.querySelectorAll('.copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var text = btn.parentNode.querySelector('code').textContent;
+      function ok() { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1500); }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(ok, fallback);
+      } else { fallback(); }
+      function fallback() {
+        var ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); ok(); } catch (e) { btn.textContent = 'Select and copy'; }
+        document.body.removeChild(ta);
+      }
+    });
+  });
+  window.addEventListener('hashchange', function () {
+    var id = location.hash.slice(1);
+    if (id && id !== current && visibleSteps().some(function (s) { return s.id === id; })) show(id, true);
+  });
+
+  start();
+})();
+
+</script>
+</body>
+</html>

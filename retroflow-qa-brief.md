@@ -104,8 +104,6 @@ this go in front of 12 teams on Monday?
 - Frontend or UI testing — there is no frontend
 - Performance/load testing beyond basic sanity checks
 - Full security penetration testing (a focused review is expected in Block 3, not a full pentest)
-- Testing the StackCraft User Directory integration mentioned in Block 4 — that is a separate,
-  time-boxed exercise later in the day
 
 ---
 

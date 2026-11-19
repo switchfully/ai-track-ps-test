@@ -24,7 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 /**
- * Inherited from the dev cohort — written at the end of a long day, under
+ * Inherited from the dev cohort, written at the end of a long day, under
  * time pressure, to prove the happy paths work before handover.
  *
  * Read it like evidence, not like a spec: a passing suite tells you these
@@ -65,7 +65,6 @@ class RetroflowApiTest {
                 new CreateRetrospectiveRequest("Sprint 1 Retro"),
                 Retrospective.class);
 
-        // Only checks the request succeeded, not which status code it used.
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
         assertThat(response.getBody()).isNotNull();
     }
@@ -95,7 +94,6 @@ class RetroflowApiTest {
                 null,
                 Retrospective.class);
 
-        // Doesn't check the actual status value came back as CLOSED.
         assertThat(response.getBody()).isNotNull();
     }
 
@@ -133,7 +131,6 @@ class RetroflowApiTest {
                 new CreateActionItemRequest("Low priority item", ActionItemPriority.LOW, "Heidi"),
                 ActionItem.class);
 
-        // Only filters on priority — doesn't combine with completed.
         ResponseEntity<ActionItem[]> response = restTemplate.getForEntity(
                 "/api/action-items?priority=HIGH", ActionItem[].class);
 
